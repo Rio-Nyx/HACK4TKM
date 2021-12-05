@@ -1,0 +1,8 @@
+firebaseConfig = {
+  apiKey: "AIzaSyACoOC6Vg9Yuff-Su_1hX7O-9jwg8qScMQ",
+  authDomain: "test-12f7a.firebaseapp.com",
+  projectId: "test-12f7a",
+  storageBucket: "test-12f7a.appspot.com",
+  messagingSenderId: "153279384591",
+  appId: "1:153279384591:web:beb62e392740ba308da77a"
+};
