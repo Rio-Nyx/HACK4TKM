@@ -1,7 +1,7 @@
-<h1>HELLO {{user}}</h1>
-<h1>{{place}}</h1>
-<h1>{{min}}</h1>
 <!DOCTYPE html>
+
+        
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,22 +34,19 @@
         <h3>Enter your details</h3>
 
 
-    <form action="{% url 'dist' %}" method="post" class="px-2 py-2">
+    <form action="{% url 'opt' %}" method="post" class="px-2 py-2">
          {% csrf_token %}
 
 
+
         <div class="mb-3">
-          <label for="fuel" class="form-label">Fuel remaining</label>
-          <input type="number" class="form-control" id="fuel" placeholder="fuel remaining" name="fuel">
-        </div>
-        <div class="mb-3">
-          <label for="val_x" class="form-label">value of x</label>
-          <input type="number" class="form-control" id="val_x" placeholder="x" name="x">
+          <label for="val_x" class="form-label">LOCATION_JSON link</label>
+          <input type="text" class="form-control" id="val_x" placeholder="" name="location">
         </div>
 
         <div class="mb-3">
-          <label for="val_y" class="form-label">value of y</label>
-          <input type="number" class="form-control" id="val_y" placeholder="y" name="y">
+          <label for="val_y" class="form-label">GRAPH_JSON link</label>
+          <input type="text" class="form-control" id="val_y" placeholder="" name="graph">
         </div>
 
         <div class="mb-3">

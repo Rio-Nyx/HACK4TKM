@@ -1,5 +1,5 @@
 from collections import defaultdict
-
+rem=60
 
 # Class to represent a graph
 class Graph:
@@ -43,8 +43,9 @@ class Graph:
         src = 0
         print("Vertex \t\tDistance from Source\tPath")
         for i in range(1, len(dist)):
-            print("\n%s --> %s \t\t%d \t\t\t\t\t" % (self.locations[str(src)], self.locations[str(i)], dist[i]),end=' '),
-            self.printPath(parent, i)
+            if (dist[i] < rem):
+                print("\n%s --> %s \t\t%d \t\t\t\t\t" % (self.locations[str(src)], self.locations[str(i)], dist[i]),end=' '),
+                self.printPath(parent, i)
 
     '''Function that implements Dijkstra's single source shortest path
     algorithm for a graph represented using adjacency matrix

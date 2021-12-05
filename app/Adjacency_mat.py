@@ -4,7 +4,10 @@ import json
 import sys
 rem=50
 l=[]
+x = 45
+y = 20
 
+user_input = {'X':x,'Y':y}
 class Graph():
 
     def __init__(self, vertices,locations):
@@ -14,7 +17,7 @@ class Graph():
         self.locations= locations
 
     def printSolution(self, dist):
-        print("Vertex tDistance from Source")
+        #print("Vertex tDistance from Source")
         for node in range(self.V):
             if dist[node]<rem:
                 print(self.locations[str(node)], "t", dist[node])
@@ -70,7 +73,7 @@ class Graph():
 
 
 
-def get_three_tuple(distance_json):
+def get_three_tuple(distance_json,user_input):
     places = len(distance_json.get('id').items())
     ids = distance_json.get('id')
     id_keys = list(ids.keys())
@@ -79,8 +82,12 @@ def get_three_tuple(distance_json):
     for i in id_keys:
         place_id = distance_json.get('id')[i]
         name = distance_json.get('Name')[i]
-        x = distance_json.get('X')[i]
-        y = distance_json.get('Y')[i]
+        if name == 'User':
+            x = user_input['X']
+            y = user_input['Y']
+        else:
+            x = distance_json.get('X')[i]
+            y = distance_json.get('Y')[i]
         three_tuple[name] = (place_id,x,y)
     return three_tuple
 
@@ -95,7 +102,7 @@ def get_graph(graph_json,distance_map):
     for i in range(n):
         graph.append([])
         for j in range(n):
-            graph[i].append( -1)
+            graph[i].append(0)
 
 
     for i in edges_id:
@@ -106,14 +113,20 @@ def get_graph(graph_json,distance_map):
         graph[start_cord[0]-1][end_cord[0]-1] = manhatten(start_cord,end_cord)
         graph[end_cord[0] - 1][start_cord[0] - 1] = manhatten(start_cord, end_cord)
         #print(f'{start_loc} to {end_loc} -> {graph[start_cord[0]-1][end_cord[0]-1]} units')
+
     return graph
 import requests
 
 
-def get_short_path(remaining_dist):
+def get_short_path(remaining_dist,X,Y):
+    x = X
+    y = Y
+
+    user_input = {'X': x, 'Y': y}
     rem=remaining_dist
-    graph_json=requests.request('GET','https://pastebin.com/raw/Aningtgq').json()
-    distance_json = requests.request('GET', 'https://pastebin.com/raw/CjNmqD0L').json()
+    graph_json=requests.request('GET','https://pastebin.com/raw/TMLVfqTe').json()
+    distance_json = requests.request('GET', 'https://pastebin.com/raw/UusSUxQb').json()
+
     '''print(x.json())
     graph_json_file = 'https://pastebin.com/raw/Aningtgq'
     distance_json_file = 'https://pastebin.com/raw/CjNmqD0L'
@@ -121,7 +134,7 @@ def get_short_path(remaining_dist):
         graph_json = json.loads(f.read())
     with open(distance_json_file,'r') as f:
         distance_json = json.loads(f.read())'''
-    distance_map = get_three_tuple(distance_json)
+    distance_map = get_three_tuple(distance_json,user_input)
     print(distance_map)
     #print(graph_json)
     #print(distance_json)
@@ -142,5 +155,11 @@ def get_short_path(remaining_dist):
     #print(gp)
 
 def get_shortest_palces():
+    print(l)
+    l.sort(key = lambda x: x[1])
+    l.pop(0)
+    print(l)
     return l
 
+get_short_path(5,80,90)
+get_shortest_palces()

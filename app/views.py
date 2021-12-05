@@ -1,8 +1,11 @@
 
 from django.shortcuts import render
+import json
 # Create your views here.
-from django.http import HttpResponse
+from django.http import JsonResponse
 import pyrebase
+from django.views.decorators.csrf import csrf_exempt
+
 global firebase,db,auth
 from . import Adjacency_mat as AM
 firebaseConfig = {
@@ -30,20 +33,18 @@ def create(request):
 
 def auth(request):
 
-    try:
-        AM.get_short_path(60)
-        firebase = pyrebase.initialize_app(firebaseConfig)
-        db = firebase.database()
-        auth = firebase.auth()
-        username=request.POST['fname']
-        password = request.POST['pswd']
-        auth.sign_in_with_email_and_password(username,password)
-        print(auth.current_user['email'])
-        context = {'user': auth.current_user['email']}
-        return render(request, 'home.html',context)
-    except:
-        context = {'error': 'E-mail id/ Password is invalid'}
-        return render(request, 'login.html',context)
+    firebase = pyrebase.initialize_app(firebaseConfig)
+    db = firebase.database()
+    auth = firebase.auth()
+    username=request.POST['fname']
+    password = request.POST['pswd']
+    auth.sign_in_with_email_and_password(username,password)
+    print(auth.current_user['email'])
+    context = {'user': auth.current_user['email']}
+    return render(request, 'home.html',context)
+    #except:
+    #    context = {'error': 'E-mail id/ Password is invalid'}
+    #    return render(request, 'login.html',context)
 
 def submit(request):
 
@@ -73,3 +74,71 @@ def submit(request):
         print("hi")
 
         return render(request, 'login.html')
+
+@csrf_exempt
+def compute(request):
+    queing_no = 5
+    chargingtime = 6
+
+
+    val_x = request.GET['x']
+    val_y = request.GET['y']
+    val_x=int(val_x)
+    val_y = int(val_y)
+    val_fuel = request.GET['fuel']
+    print(val_fuel)
+    print(val_y)
+    print(val_x)
+
+    AM.get_short_path(val_fuel,val_x,val_y)
+    l = AM.get_shortest_palces()
+    place = ''
+    min = 10000
+    for i in range(1, len(l)):
+        cost = queing_no * chargingtime + l[i][1]
+        if (cost < min):
+            place = l[i][0]
+            min = cost
+    print(min)
+    print(place)
+
+    response__data = {'place':place,'min':min}
+    return JsonResponse(response__data)
+
+
+def dist(request):
+    queing_no = 5
+    chargingtime = 6
+    fuel = request.POST['fuel']
+    x = request.POST['x']
+    y = request.POST['y']
+    fuel=int(fuel)
+    x = int(x)
+    y = int(y)
+    AM.get_short_path(fuel, x, y)
+    l = AM.get_shortest_palces()
+    place = ''
+    min = 10000
+    for i in range(1, len(l)):
+        cost = queing_no * chargingtime + l[i][1]
+        if (cost < min):
+            place = l[i][0]
+            min = cost
+    print(min)
+    print(place)
+    context={'place':place,'min':min}
+    return render(request, 'result.html',context)
+
+def optimal(request):
+    return render(request, 'optimalstations.html')
+
+from . import optimal as OP
+
+def opt(request):
+    graph_link=request.POST['graph']
+    location_link = request.POST['location']
+    print(graph_link)
+    print(location_link)
+    charging_stations=OP.compute(graph_link,location_link)
+    context={'charging_stations':charging_stations}
+    return render(request, 'optresult.html',context)
